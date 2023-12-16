@@ -1,0 +1,160 @@
+﻿@model DSW1.Proyecto_Tienda_Zapatillas.Web.Models.Colaborador.MergeColaborador
+
+@{
+    ViewData["Title"] = "MergeColaborador";
+}
+
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<h1>MergeColaborador</h1>
+
+
+
+
+<h4>MergeColaborador</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="MergeColaborador">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="DNI" class="control-label"></label>
+                <input asp-for="DNI" class="form-control" />
+                <span asp-validation-for="DNI" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApePaterno" class="control-label"></label>
+                <input asp-for="ApePaterno" class="form-control" />
+                <span asp-validation-for="ApePaterno" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApeMaterno" class="control-label"></label>
+                <input asp-for="ApeMaterno" class="form-control" />
+                <span asp-validation-for="ApeMaterno" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Sexo" class="control-label"></label>
+                <select asp-for="Sexo" class="form-control">
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                </select>
+                <span asp-validation-for="Sexo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Sueldo" class="control-label"></label>
+                <input asp-for="Sueldo" class="form-control" />
+                <span asp-validation-for="Sueldo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Telefono" class="control-label"></label>
+                <input asp-for="Telefono" class="form-control" />
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Direccion" class="control-label"></label>
+                <input asp-for="Direccion" class="form-control" />
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="cargo">Cargo:</label>
+                <select class="form-control" id="cargo" name="IdCargo">
+                    <option value="">Seleccione un cargo</option>
+                    @foreach (var cargo in Model.Cargos)
+                    {
+                        <option value="@cargo.IdCargo">@cargo.Descripcion</option>
+                    }
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label for="estado">Estado:</label>
+                <select class="form-control" id="estado" name="IdEstado">
+                    <option value="">Seleccione un estado</option>
+                    @foreach (var estado in Model.Estados)
+                    {
+                        <option value="@estado.IdEstado">@estado.Descripcion</option>
+                    }
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label for="provincia">Provincia:</label>
+                <select class="form-control" id="provincia" name="provincia">
+                    <option value="">Seleccione una provincia</option>
+                    @foreach (var provincia in Model.Provincias)
+                    {
+                        <option value="@provincia.IdProvincia">@provincia.Descripcion</option>
+                    }
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label for="distrito">Distrito:</label>
+                <select class="form-control" id="distrito" name="IdDistrito">
+                    <option value="">Seleccione un distrito</option>
+                </select>
+            </div>
+            </br>
+            </br>
+            
+            <div class="form-group">
+                <input type="submit" value="Grabar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@if (ViewBag.Mensaje != null)
+{
+    <div class="alert alert-info">
+        @ViewBag.Mensaje
+    </div>
+}
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#provincia').change(function () {
+            var idProvincia = $(this).val();
+            if (idProvincia) {
+                $.ajax({
+                    url: '@Url.Action("GetDistritosByProvincia", "Colaborador")',
+                    type: 'GET',
+                    data: { idProvincia: idProvincia },
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#distrito').empty();
+                        $('#distrito').append($('<option>').val('').text('Seleccione un distrito'));
+                        $.each(data, function (i, item) {
+                            $('#distrito').append($('<option>').val(item.idDistrito).text(item.descripcion));
+                        });
+                    }
+                });
+            } else {
+                $('#distrito').empty();
+                $('#distrito').append($('<option>').val('').text('Seleccione un distrito'));
+            }
+        });
+    });
+
+</script>
